@@ -4,11 +4,12 @@ export const COLUMNS = [
   {
     label: "Product",
     dataKey: "product",
+    width: 200
   },
   {
     label: "Price\u00A0($)",
     dataKey: "price",
-    width: 120
+    width:120
   },
   {
     label: "Calories\u00A0(g)",

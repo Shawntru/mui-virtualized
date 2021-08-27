@@ -1,6 +1,6 @@
 /* eslint-disable no-debugger */
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -91,7 +91,7 @@ const Row = ({ index, style, data: { columns, items, classes } }) => {
 const itemKey = (index, data) => data.items[index].id;
 
 /**
- * wee define this here because I wanted to pass my  columns prop from App, and classes from ReactWindowTable
+ * wee define this here because I wanted to pass my columns prop from App, and classes from ReactWindowTable
  * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemData prop
  */
 const createItemData = memoize((classes, columns, data) => ({
@@ -103,21 +103,36 @@ const createItemData = memoize((classes, columns, data) => ({
 const ReactWindowTable = ({ data, columns }) => {
     const classes = useStyles();
 
+    const [columnData, setColumnData] = useState(columns);
+
     // memoized data passed to the Row item renderer
-    const itemData = createItemData(classes, columns, data);
+    const itemData = createItemData(classes, columnData, data);
+
+    const handleWidthChange = (columnId, width) => {
+        const newColumns = columnData.map((column) => {
+            if (column.dataKey === columnId) {
+                return {
+                    ...column,
+                    width
+                };
+            }
+            return column;
+        });
+        setColumnData(newColumns);
+    };
 
     return (
         <div className={classes.root}>
             <Table className={classes.table} component="div">
                 <TableHead component="div" className={classes.thead}>
                     <TableRow component="div" className={clsx(classes.row, classes.headerRow)}>
-                        {columns.map((column, colIndex) => {
+                        {columnData.map((column, colIndex) => {
                             return (
                                 <TableColumns
                                     key={colIndex}
                                     classes={classes}
-                                    colIndex={colIndex}
                                     column={column}
+                                    handleWidthChange={handleWidthChange}
                                 />
                             )
                         })}

@@ -9,14 +9,14 @@ import { ROW_SIZE } from "../data/constants";
 /**
  * Renders the headers row based on the columns provided.
  */
-const TableColumns = ({ classes, column }) => {
+const TableColumns = ({ classes, column, handleWidthChange }) => {
     const draggableRef = useRef(null);
 
     return (
         <TableCell
             component="div"
             variant="head"
-            align={column.numeric || false ? "right" : "left"}
+            align={column.numeric || false ? "center" : "left"}
             className={clsx(
                 classes.cell,
                 classes.column,
@@ -32,10 +32,10 @@ const TableColumns = ({ classes, column }) => {
             <Draggable
                 nodeRef={draggableRef}
                 axis='x'
-                // onDrag={(event, data) => {
-                //     const newWidth = (props.column.width || 120) + data.deltaX;
-                //     props.handleWidthChange(props.column.field, newWidth);
-                // }}
+                onDrag={(event, data) => {
+                    const newWidth = (column.width || 120) + data.deltaX;
+                    handleWidthChange(column.dataKey, newWidth);
+                }}
                 position={{ x: 0, y: 0 }}
             >
                 <span ref={draggableRef} data-qa='resizeHandle'>⋮</span>
