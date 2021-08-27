@@ -10,7 +10,7 @@ import { createData } from "./data/data";
 
 import ReactWindowTable from "./components/reactWindowTable";
 
-// table columns
+// table columns, which contain our initial default widths
 const columns = COLUMNS;
 
 // create mock data
@@ -22,8 +22,9 @@ const useStyles = makeStyles((theme) => ({
         display: "flex"
     },
     container: {
+        // AutoSizer will expand to fill this container
         flexGrow: 1,
-        height: 500
+        height: '90vh'
     },
     paper: {
         height: "100%",
@@ -51,7 +52,7 @@ const App = () => {
                 <Paper className={classes.paper}>
                     <Toolbar className={classes.toolbar}>
                         <Typography component="h2" variant="h5" className={classes.title}>
-                            {"Example Table"}
+                            {"Adjustable virtualized MUI Table"}
                         </Typography>
 
                         <div className={classes.spacer} />

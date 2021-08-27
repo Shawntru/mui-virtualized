@@ -16,7 +16,7 @@ const TableColumns = ({ classes, column, handleWidthChange }) => {
         <TableCell
             component="div"
             variant="head"
-            align={column.numeric || false ? "center" : "left"}
+            align={'left'}
             className={clsx(
                 classes.cell,
                 classes.column,
@@ -30,6 +30,7 @@ const TableColumns = ({ classes, column, handleWidthChange }) => {
         >
             {column.label}
             <Draggable
+                defaultClassName={classes.tableHeaderResizeHandle}
                 nodeRef={draggableRef}
                 axis='x'
                 onDrag={(event, data) => {
@@ -38,7 +39,7 @@ const TableColumns = ({ classes, column, handleWidthChange }) => {
                 }}
                 position={{ x: 0, y: 0 }}
             >
-                <span ref={draggableRef} data-qa='resizeHandle'>⋮</span>
+                <span ref={draggableRef}>⋮</span>
             </Draggable>
         </TableCell>
     );

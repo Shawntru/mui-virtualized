@@ -1,6 +1,6 @@
 import faker from "faker";
 
-export const createData = (qty = 100) => {
+export const createData = (qty = 5000) => {
   let data = [];
 
   for (let i = 0; i < qty; i++) {

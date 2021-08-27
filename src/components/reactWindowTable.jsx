@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import clsx from "clsx";
@@ -8,11 +7,13 @@ import { FixedSizeList as List } from "react-window";
 import memoize from "memoize-one";
 
 import { makeStyles } from "@material-ui/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableHead from "@material-ui/core/TableHead";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import {
+    Table,
+    TableBody,
+    TableHead,
+    TableCell,
+    TableRow
+} from "@material-ui/core";
 
 import { ROW_SIZE } from "../data/constants";
 
@@ -50,23 +51,27 @@ export const useStyles = makeStyles(() => ({
     expandingCell: {
         flex: 1
     },
-    column: {}
+    column: {},
+    tableHeaderResizeHandle: {
+        cursor: 'col-resize',
+        fontSize: '1rem',
+        verticalAlign: 'middle',
+        position: 'absolute',
+    },
 }));
 
-/**
- * Row component
- */
-const Row = ({ index, style, data: { columns, items, classes } }) => {
+// The row component
+const Row = ({ index, style, data: { columnData, items, classes } }) => {
     const item = items[index];
     return (
         <TableRow component="div" className={classes.row} style={style}>
-            {columns.map((column, colIndex) => {
+            {columnData.map((column, colIndex) => {
                 return (
                     <TableCell
                         key={item.id + colIndex}
                         component="div"
                         variant="body"
-                        align={column.numeric || false ? "right" : "left"}
+                        align={'left'}
                         className={clsx(
                             classes.cell,
                             !column.width && classes.expandingCell
@@ -94,8 +99,8 @@ const itemKey = (index, data) => data.items[index].id;
  * wee define this here because I wanted to pass my columns prop from App, and classes from ReactWindowTable
  * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemData prop
  */
-const createItemData = memoize((classes, columns, data) => ({
-    columns,
+const createItemData = memoize((classes, columnData, data) => ({
+    columnData,
     classes,
     items: data
 }));
