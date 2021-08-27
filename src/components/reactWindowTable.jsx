@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable react/prop-types */
 import React from "react";
 import clsx from "clsx";
@@ -57,7 +58,6 @@ export const useStyles = makeStyles(() => ({
  */
 const Row = ({ index, style, data: { columns, items, classes } }) => {
     const item = items[index];
-
     return (
         <TableRow component="div" className={classes.row} style={style}>
             {columns.map((column, colIndex) => {
@@ -110,7 +110,19 @@ const ReactWindowTable = ({ data, columns }) => {
         <div className={classes.root}>
             <Table className={classes.table} component="div">
                 <TableHead component="div" className={classes.thead}>
-                    <TableColumns classes={classes} columns={columns} />
+                    <TableRow component="div" className={clsx(classes.row, classes.headerRow)}>
+                        {columns.map((column, colIndex) => {
+                            return (
+                                <TableColumns
+                                    key={colIndex}
+                                    classes={classes}
+                                    colIndex={colIndex}
+                                    column={column}
+                                />
+                            )
+                        })}
+                    </TableRow>
+
                 </TableHead>
 
                 <TableBody component="div" className={classes.tbody}>

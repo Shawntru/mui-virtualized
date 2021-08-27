@@ -1,39 +1,47 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useRef } from "react";
 import clsx from "clsx";
-import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
+import Draggable from 'react-draggable';
 
 import { ROW_SIZE } from "../data/constants";
 
 /**
  * Renders the headers row based on the columns provided.
  */
-const TableColumns = ({ classes, columns }) => (
-  <TableRow component="div" className={clsx(classes.row, classes.headerRow)}>
-    {columns.map((column, colIndex) => {
-      return (
+const TableColumns = ({ classes, column }) => {
+    const draggableRef = useRef(null);
+
+    return (
         <TableCell
-          key={colIndex}
-          component="div"
-          variant="head"
-          align={column.numeric || false ? "right" : "left"}
-          className={clsx(
-            classes.cell,
-            classes.column,
-            !column.width && classes.expandingCell
-          )}
-          style={{
-            flexBasis: column.width || false,
-            height: ROW_SIZE
-          }}
-          scope="col"
+            component="div"
+            variant="head"
+            align={column.numeric || false ? "right" : "left"}
+            className={clsx(
+                classes.cell,
+                classes.column,
+                !column.width && classes.expandingCell
+            )}
+            style={{
+                flexBasis: column.width || false,
+                height: ROW_SIZE
+            }}
+            scope="col"
         >
-          {column.label}
+            {column.label}
+            <Draggable
+                nodeRef={draggableRef}
+                axis='x'
+                // onDrag={(event, data) => {
+                //     const newWidth = (props.column.width || 120) + data.deltaX;
+                //     props.handleWidthChange(props.column.field, newWidth);
+                // }}
+                position={{ x: 0, y: 0 }}
+            >
+                <span ref={draggableRef} data-qa='resizeHandle'>⋮</span>
+            </Draggable>
         </TableCell>
-      );
-    })}
-  </TableRow>
-);
+    );
+};
 
 export default TableColumns;

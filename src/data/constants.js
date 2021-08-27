@@ -3,7 +3,7 @@ export const ROW_SIZE = 48;
 export const COLUMNS = [
   {
     label: "Product",
-    dataKey: "product"
+    dataKey: "product",
   },
   {
     label: "Price\u00A0($)",
