@@ -1,20 +1,16 @@
 import faker from "faker";
 
-export const createData = (qty = 5000) => {
+export const createData = (rowAmount = 5000, columnAmount = 80) => {
   let data = [];
 
-  for (let i = 0; i < qty; i++) {
-    const d = {
-      id: faker.datatype.uuid(),
-      product: faker.commerce.product(),
-      price: faker.commerce.price(),
-      calories: faker.datatype.number({ max: 1000 }),
-      fat: faker.datatype.float({ max: 50, precision: 0.1 }),
-      carbs: faker.datatype.number({ max: 100 }),
-      protein: faker.datatype.float({ max: 50, precision: 0.1 })
-    };
+  for (let i = 0; i < rowAmount; i++) {
+    let columns = {}
 
-    data.push(d);
+    for (let i = 0; i < columnAmount; i++) {
+      columns['column' + (i + 1)] = faker.datatype.uuid()
+    }
+
+    data.push(columns);
   }
 
   return data;
