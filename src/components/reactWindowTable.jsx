@@ -94,17 +94,6 @@ const ReactWindowTable = ({ data, columns }) => {
 
     const [columnData, setColumnData] = useState(columns);
 
-    // const itemData = useMemo((classes, columnData, data) => {
-    //     if (classes && columnData && data) {
-    //         debugger;
-    //         return ({
-    //             columnData,
-    //             classes,
-    //             items: data,
-    //         })
-    //     }
-    // }, [classes, columnData, data]);
-
     /**
     * Arguments will be memozied and passed into the Row renderer via `itemData` prop inside the FixedSizeList component
     * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemData prop
