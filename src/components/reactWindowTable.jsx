@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import clsx from "clsx";
 
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeList as List } from "react-window";
+import { FixedSizeList } from "react-window";
 import memoize from "memoize-one";
 
 import { makeStyles } from "@material-ui/styles";
@@ -60,7 +60,10 @@ export const useStyles = makeStyles(() => ({
     },
 }));
 
-// The row component
+/**
+ * The row component
+ * This receives memoized data from the `itemData` prop inside the FixedSizeList component
+ */
 const Row = ({ index, style, data: { columnData, items, classes } }) => {
     const item = items[index];
     return (
@@ -100,8 +103,9 @@ const itemKey = (index, data) => data.items[index].id;
 
 /**
  * Defining this here allows passing my columns prop from App, and classes from ReactWindowTable
+ * classes will be memozied and passed into the Row renderer via `itemData` prop inside the FixedSizeList component
  * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemData prop
- * Use of `memoize` here since useHooks outside of functional component breaks the rules of hooks
+ * Use of `memoize` here since useMemo outside of functional component breaks the rules of hooks
  */
 const createItemData = memoize((classes, columnData, data) => ({
     columnData,
@@ -150,9 +154,11 @@ const ReactWindowTable = ({ data, columns }) => {
                 </TableHead>
 
                 <TableBody component="div" className={classes.tbody}>
+                    {/* AutoSizer for the virtualized list */}
                     <AutoSizer>
                         {({ height, width }) => (
-                            <List
+                            // Our virtualized list
+                            <FixedSizeList
                                 className={classes.list}
                                 height={height}
                                 width={width}
@@ -162,7 +168,7 @@ const ReactWindowTable = ({ data, columns }) => {
                                 itemData={itemData}
                             >
                                 {Row}
-                            </List>
+                            </FixedSizeList>
                         )}
                     </AutoSizer>
                 </TableBody>
