@@ -1,6 +1,7 @@
 export const ROW_SIZE = 48;
 
 // Data for our table headers and the initial widths of the columns.
+// \u00A0 is Unicode char for NO-BREAK SPACE
 export const COLUMNS = [
   {
     label: "Product",

@@ -90,14 +90,18 @@ const Row = ({ index, style, data: { columnData, items, classes } }) => {
 };
 
 /**
- * itemKey function for returning the key prop for an item.
+ * By default, lists will use an item's index as its key. This is okay if:
+ * - Your collections of items is never sorted or modified
+ * - Your item renderer is not stateful and does not extend PureComponent
+ * If your list does not satisfy the above constraints, use the itemKey property to specify your own keys for items.
  * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemKey prop
  */
 const itemKey = (index, data) => data.items[index].id;
 
 /**
- * wee define this here because I wanted to pass my columns prop from App, and classes from ReactWindowTable
+ * Defining this here allows passing my columns prop from App, and classes from ReactWindowTable
  * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemData prop
+ * Use of `memoize` here since useHooks outside of functional component breaks the rules of hooks
  */
 const createItemData = memoize((classes, columnData, data) => ({
     columnData,
