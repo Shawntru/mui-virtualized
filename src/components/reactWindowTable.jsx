@@ -89,39 +89,48 @@ const Row = ({ index, style, data: { columnData, items, classes } }) => {
     );
 };
 
-/**
- * By default, lists will use an item's index as its key. This is okay if:
- * - Your collections of items is never sorted or modified
- * - Your item renderer is not stateful and does not extend PureComponent
- * If your list does not satisfy the above constraints, use the itemKey property to specify your own keys for items.
- * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemKey prop
- */
-const itemKey = (index, data) => data.items[index].id;
-
-/**
- * Example states that declaration of this data here allows for passing of column data from App and
- *  classes from reactWindowTable to be passed into row renderer, but I have all data coming from ReactWindowTable
- *  component itself. Not sure if still relevant.
- * Arguments will be memozied and passed into the Row renderer via `itemData` prop inside the FixedSizeList component
- * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemData prop
- * Use of `memoize` here since useMemo outside of functional component breaks the rules of hooks
- */
-const createItemData = memoize((classes, columnData, data) => {
-    return ({
-        columnData,
-        classes,
-        items: data
-    })
-});
-
 const ReactWindowTable = ({ data, columns }) => {
     const classes = useStyles();
 
     const [columnData, setColumnData] = useState(columns);
 
-    // memoized data passed to the Row item renderer
+    // const itemData = useMemo((classes, columnData, data) => {
+    //     if (classes && columnData && data) {
+    //         debugger;
+    //         return ({
+    //             columnData,
+    //             classes,
+    //             items: data,
+    //         })
+    //     }
+    // }, [classes, columnData, data]);
+
+    /**
+    * Arguments will be memozied and passed into the Row renderer via `itemData` prop inside the FixedSizeList component
+    * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemData prop
+    * The use of `useMemo` caused issues with the way `data` was passed into `itemKey`, further experimentation
+    *   needed to remove `memoize` as a dependent
+    * */
+    const createItemData = memoize((classes, columnData, data) => {
+        return ({
+            columnData,
+            classes,
+            items: data,
+        })
+    });
+
     const itemData = createItemData(classes, columnData, data);
 
+    /**
+     * By default, lists will use an item's index as its key. This is okay if:
+     * - Your collections of items is never sorted or modified
+     * - Your item renderer is not stateful and does not extend PureComponent
+     * If the list does not satisfy the above constraints, use the itemKey property to specify your own keys for items.
+     * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemKey prop
+     */
+    const itemKey = (index, data) => data.items[index].id;
+
+    // Our width changer, still iterating over all columns in the columnData state
     const handleWidthChange = (columnId, width) => {
         const newColumns = columnData.map((column) => {
             if (column.dataKey === columnId) {
