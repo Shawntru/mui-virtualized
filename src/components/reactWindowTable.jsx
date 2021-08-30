@@ -1,12 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
-import clsx from "clsx";
-
-import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeList } from "react-window";
-import memoize from "memoize-one";
-
-import { makeStyles } from "@material-ui/styles";
 import {
     Table,
     TableBody,
@@ -14,9 +7,13 @@ import {
     TableCell,
     TableRow
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+import { FixedSizeList } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import clsx from "clsx";
+import memoize from "memoize-one";
 
 import { ROW_SIZE } from "../data/constants";
-
 import TableColumns from "./tableColumns";
 
 export const useStyles = makeStyles(() => ({
