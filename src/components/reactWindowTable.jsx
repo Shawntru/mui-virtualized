@@ -102,16 +102,20 @@ const Row = ({ index, style, data: { columnData, items, classes } }) => {
 const itemKey = (index, data) => data.items[index].id;
 
 /**
- * Defining this here allows passing my columns prop from App, and classes from ReactWindowTable
- * classes will be memozied and passed into the Row renderer via `itemData` prop inside the FixedSizeList component
+ * Example states that declaration of this data here allows for passing of column data from App and
+ *  classes from reactWindowTable to be passed into row renderer, but I have all data coming from ReactWindowTable
+ *  component itself. Not sure if still relevant.
+ * Arguments will be memozied and passed into the Row renderer via `itemData` prop inside the FixedSizeList component
  * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemData prop
  * Use of `memoize` here since useMemo outside of functional component breaks the rules of hooks
  */
-const createItemData = memoize((classes, columnData, data) => ({
-    columnData,
-    classes,
-    items: data
-}));
+const createItemData = memoize((classes, columnData, data) => {
+    return ({
+        columnData,
+        classes,
+        items: data
+    })
+});
 
 const ReactWindowTable = ({ data, columns }) => {
     const classes = useStyles();
