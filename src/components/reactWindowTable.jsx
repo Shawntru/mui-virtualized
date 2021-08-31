@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
     Table,
     TableBody,
@@ -11,7 +11,6 @@ import { makeStyles } from "@material-ui/styles";
 import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import clsx from "clsx";
-import memoize from "memoize-one";
 
 import { ROW_SIZE } from "../data/constants";
 import TableColumns from "./tableColumns";
@@ -57,67 +56,10 @@ export const useStyles = makeStyles(() => ({
     },
 }));
 
-/**
- * The row component
- * This receives memoized data from the `itemData` prop inside the FixedSizeList component
- */
-const Row = ({ index, style, data: { columnData, items, classes } }) => {
-    const item = items[index];
-    return (
-        <TableRow component="div" className={classes.row} style={style}>
-            {columnData.map((column, colIndex) => {
-                return (
-                    <TableCell
-                        key={item.id + colIndex}
-                        component="div"
-                        variant="body"
-                        align={'left'}
-                        className={clsx(
-                            classes.cell,
-                            !column.width && classes.expandingCell
-                        )}
-                        style={{
-                            flexBasis: column.width || false,
-                            height: ROW_SIZE
-                        }}
-                    >
-                        {item[column.dataKey]}
-                    </TableCell>
-                );
-            })}
-        </TableRow>
-    );
-};
-
 const ReactWindowTable = ({ data, columns }) => {
     const classes = useStyles();
 
     const [columnData, setColumnData] = useState(columns);
-
-    /**
-    * Arguments will be memozied and passed into the Row renderer via `itemData` prop inside the FixedSizeList component
-    * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemData prop
-    * The use of `useMemo` caused issues with the way `data` was passed into `itemKey`, further experimentation
-    *   needed to remove `memoize` as a dependent
-    * */
-    const createItemData = memoize((classes, columnData, data) => {
-        return ({
-            columnData,
-            classes,
-            items: data,
-        })
-    });
-
-    const itemData = createItemData(classes, columnData, data);
-
-    /**
-     * By default, lists will use an item's index as its key. This is okay if:
-     * - Your collections of items is never sorted or modified
-     * - Your item renderer is not stateful and does not extend PureComponent
-     * If the list does not satisfy the above constraints, use the itemKey property to specify your own keys for items.
-     * see https://react-window.vercel.app/#/api/FixedSizeList  -> itemKey prop
-     */
-    const itemKey = (index, data) => data.items[index].id;
 
     // Our width changer, still iterating over all columns in the columnData state
     const handleWidthChange = (columnId, width) => {
@@ -132,6 +74,34 @@ const ReactWindowTable = ({ data, columns }) => {
         });
         setColumnData(newColumns);
     };
+
+    const Rows = useCallback(({ index, style }) => {
+        const item = data[index];
+        return (
+            <TableRow component="div" className={classes.row} style={style}>
+                {columnData.map((column, colIndex) => {
+                    return (
+                        <TableCell
+                            key={item.id + colIndex}
+                            component="div"
+                            variant="body"
+                            align={'left'}
+                            className={clsx(
+                                classes.cell,
+                                !column.width && classes.expandingCell
+                            )}
+                            style={{
+                                flexBasis: column.width || false,
+                                height: ROW_SIZE
+                            }}
+                        >
+                            {item[column.dataKey]}
+                        </TableCell>
+                    );
+                })}
+            </TableRow>
+        );
+    }, [columnData]);
 
     return (
         <div className={classes.root}>
@@ -163,10 +133,8 @@ const ReactWindowTable = ({ data, columns }) => {
                                 width={width}
                                 itemCount={data.length}
                                 itemSize={ROW_SIZE}
-                                itemKey={itemKey}
-                                itemData={itemData}
                             >
-                                {Row}
+                                {Rows}
                             </FixedSizeList>
                         )}
                     </AutoSizer>
