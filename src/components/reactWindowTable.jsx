@@ -60,20 +60,29 @@ const ReactWindowTable = ({ data, columns }) => {
     const classes = useStyles();
 
     const [columnData, setColumnData] = useState(columns);
+    const [columnWidths, setColumnWidths] = useState({});
 
     // Our width changer, still iterating over all columns in the columnData state
-    const handleWidthChange = (columnId, width) => {
-        const newColumns = columnData.map((column) => {
-            if (column.dataKey === columnId) {
-                return {
-                    ...column,
-                    width
-                };
-            }
-            return column;
-        });
-        setColumnData(newColumns);
+    const handleWidthChange = (columnDataKey, width) => {
+        const newWidths = {
+            ...columnWidths,
+            [columnDataKey]: width
+        };
+        setColumnWidths(newWidths);
     };
+
+    // const handleWidthChange = (columnId, width) => {
+    //     const newColumns = columnData.map((column) => {
+    //         if (column.dataKey === columnId) {
+    //             return {
+    //                 ...column,
+    //                 width
+    //             };
+    //         }
+    //         return column;
+    //     });
+    //     setColumnData(newColumns);
+    // };
 
     const Rows = useCallback(({ index, style }) => {
         const item = data[index];
@@ -91,7 +100,7 @@ const ReactWindowTable = ({ data, columns }) => {
                                 !column.width && classes.expandingCell
                             )}
                             style={{
-                                flexBasis: column.width || false,
+                                flexBasis: columnWidths[column.dataKey] || column.width || false,
                                 height: ROW_SIZE
                             }}
                         >
@@ -101,7 +110,7 @@ const ReactWindowTable = ({ data, columns }) => {
                 })}
             </TableRow>
         );
-    }, [columnData]);
+    }, [columnData, columnWidths]);
 
     return (
         <div className={classes.root}>
@@ -114,6 +123,7 @@ const ReactWindowTable = ({ data, columns }) => {
                                     key={colIndex}
                                     classes={classes}
                                     column={column}
+                                    columnWidth={columnWidths[column.dataKey]}
                                     handleWidthChange={handleWidthChange}
                                 />
                             )

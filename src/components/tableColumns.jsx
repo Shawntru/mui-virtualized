@@ -9,7 +9,7 @@ import { ROW_SIZE } from "../data/constants";
 /**
  * Renders the headers row based on the columns provided.
  */
-const TableColumns = ({ classes, column, handleWidthChange }) => {
+const TableColumns = ({ classes, column, handleWidthChange, columnWidth }) => {
     const draggableRef = useRef(null);
 
     return (
@@ -23,7 +23,7 @@ const TableColumns = ({ classes, column, handleWidthChange }) => {
                 !column.width && classes.expandingCell
             )}
             style={{
-                flexBasis: column.width || false,
+                flexBasis: columnWidth || column.width || false,
                 height: ROW_SIZE
             }}
             scope="col"
@@ -34,7 +34,7 @@ const TableColumns = ({ classes, column, handleWidthChange }) => {
                 nodeRef={draggableRef}
                 axis='x'
                 onDrag={(event, data) => {
-                    const newWidth = (column.width || 120) + data.deltaX;
+                    const newWidth = (columnWidth || column.width || 120) + data.deltaX;
                     handleWidthChange(column.dataKey, newWidth);
                 }}
                 position={{ x: 0, y: 0 }}
