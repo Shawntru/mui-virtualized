@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
     Table,
     TableBody,
@@ -59,15 +59,16 @@ export const useStyles = makeStyles(() => ({
 const ReactWindowTable = ({ data, columns }) => {
     const classes = useStyles();
 
-    const [columnData, setColumnData] = useState(columns);
+    const columnData = useMemo(() => { return columns }, [columns])
     const [columnWidths, setColumnWidths] = useState({});
 
     // Our width changer, still iterating over all columns in the columnData state
-    const handleWidthChange = (columnDataKey, width) => {
+    const handleWidthChange =(columnDataKey, width) => {
         const newWidths = {
             ...columnWidths,
             [columnDataKey]: width
         };
+        console.log(newWidths);
         setColumnWidths(newWidths);
     };
 
