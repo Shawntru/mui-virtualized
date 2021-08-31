@@ -75,7 +75,7 @@ const ReactWindowTable = ({ data, columns }) => {
         setColumnData(newColumns);
     };
 
-    const Row = useCallback(({ index, style }) => {
+    const Rows = useCallback(({ index, style }) => {
         const item = data[index];
         return (
             <TableRow component="div" className={classes.row} style={style}>
@@ -101,7 +101,7 @@ const ReactWindowTable = ({ data, columns }) => {
                 })}
             </TableRow>
         );
-    }, [data, columnData]);
+    }, [columnData]);
 
     return (
         <div className={classes.root}>
@@ -134,7 +134,7 @@ const ReactWindowTable = ({ data, columns }) => {
                                 itemCount={data.length}
                                 itemSize={ROW_SIZE}
                             >
-                                {Row}
+                                {Rows}
                             </FixedSizeList>
                         )}
                     </AutoSizer>
